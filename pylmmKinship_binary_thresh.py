@@ -18,9 +18,10 @@
 
 
 # TODO
-# write the output in binary
+# write the output in binary (done)
 # given an LD file, thresh, and whether shared or local:
 #   treat LD as 0 or 1 depending on whether it crosses thresh
+#   exclude SNPs that don't meet threshold
 # given region, only use snps from that region out of the b/tfile
 # edit the usage/output to match current fxn
 
@@ -71,7 +72,7 @@ outFile = args[0]
 ldFile = args[1]
 ldFlagStr = args[2] # shared or local
 ldThresh = float(args[3])
-makeLocal = False
+makeLocal = None
 
 if ldFlagStr == "shared":
   makeLocal = False
@@ -134,23 +135,31 @@ while i < IN.numSNPs:
         i += 1
         continue
 
+### main changes here ###
       ## count snps with low max LD toward local
       if ldFlagStr == "local":
         if ldMaxes[i] < ldThresh:
-          W[:,j] = 1*snp
-        else:
-          W[:,j] = 0*snp
+          W[:,j] = snp
+          j += 1
+          i += 1
+        else: # exclude snp
+          i += 1
+          continue
 
       ## count snps with high max LD toward shared 
       elif ldFlagStr == "shared":
         if ldMaxes[i] >= ldThresh:
-          W[:,j] = 1*snp
-        else:
-          W[:,j] = 0*snp
+          W[:,j] = snp
+          j += 1
+          i += 1
+        else: # exclude snp
+          i += 1
+          continue
 
-      i += 1
-      j += 1
    if j < options.computeSize: W = W[:,range(0,j)] 
+
+### main changes above ###
+
 
    if options.verbose: sys.stderr.write("Processing first %d SNPs\n" % i)
    if K == None: 
