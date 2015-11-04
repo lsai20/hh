@@ -156,12 +156,19 @@ while i < IN.numSNPs:
           i += 1
           continue
 
+      else:
+        print "invalid LD flag"
+
    if j < options.computeSize: W = W[:,range(0,j)] 
 
 ### main changes above ###
 
 
    if options.verbose: sys.stderr.write("Processing first %d SNPs\n" % i)
+   sz = W.shape()
+   print "Size of W:  %s \n" % sz
+
+
    if K == None: 
       try: 
          K = linalg.fblas.dgemm(alpha=1.,a=W.T,b=W.T,trans_a=True,trans_b=False) # calculateKinship(W) * j
