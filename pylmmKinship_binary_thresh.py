@@ -126,6 +126,7 @@ IN.getSNPIterator()
 # Annoying hack to get around the fact that it is expensive to determine the number of SNPs in an emma file
 if options.emmaFile: IN.numSNPs = options.numSNPs
 i = 0
+numUsed = 0 # number of snps meeting thresh either way
 K = None
 while i < IN.numSNPs:
    j = 0
@@ -142,6 +143,7 @@ while i < IN.numSNPs:
           W[:,j] = snp
           j += 1
           i += 1
+          numUsed += 1
         else: # exclude snp
           i += 1
           continue
@@ -152,6 +154,7 @@ while i < IN.numSNPs:
           W[:,j] = snp
           j += 1
           i += 1
+          numUsed += 1
         else: # exclude snp
           i += 1
           continue
@@ -163,13 +166,7 @@ while i < IN.numSNPs:
 
 ### main changes above ###
 
-
    if options.verbose: sys.stderr.write("Processing first %d SNPs\n" % i)
-   sz = W.shape
-   print "test"
-   print sz
-   #sys.stderr.write("Size of W:  %s \n" % sz)
-
 
    if K == None: 
       try: 
@@ -184,6 +181,13 @@ while i < IN.numSNPs:
 
 
 K = K / float(IN.numSNPs)
+
+# print number of SNPs used
+print "Included %d out of %d SNPs in GRM." % (numUsed, IN.numSNPs)
+if ldFlagStr == "local":
+    print "%d SNPs had max LD < %f.\n" % (numUsed, ldThresh)
+elif ldFlagStr == "shared":
+    print "%d SNPs had max LD >= %f.\n" % (numUsed, ldThresh)
 
 
 ###    Saving binary files .grm.N.bin, .grm.bin     ###
