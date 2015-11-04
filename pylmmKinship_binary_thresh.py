@@ -166,8 +166,9 @@ while i < IN.numSNPs:
 
    if options.verbose: sys.stderr.write("Processing first %d SNPs\n" % i)
    sz = W.shape
-   print("test")
-   sys.stderr.write("Size of W:  %s \n" % sz)
+   print "test"
+   print sz
+   #sys.stderr.write("Size of W:  %s \n" % sz)
 
 
    if K == None: 
