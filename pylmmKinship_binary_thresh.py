@@ -137,6 +137,7 @@ while i < IN.numSNPs:
         continue
 
 ### main changes here ###
+# TODO try with 0.001 LD vs 1 instead of 0 vs 1
       ## count snps with low max LD toward local
       if ldFlagStr == "local":
         if ldMaxes[i] < ldThresh:
@@ -145,7 +146,10 @@ while i < IN.numSNPs:
           i += 1
           numUsed += 1
         else: # exclude snp
+          W[:,j] = snp
+          j += 1
           i += 1
+          numUsed += 1
           continue
 
       ## count snps with high max LD toward shared 
@@ -156,6 +160,8 @@ while i < IN.numSNPs:
           i += 1
           numUsed += 1
         else: # exclude snp
+          W[:,j] = 0.001*snp
+          j += 1
           i += 1
           continue
 
